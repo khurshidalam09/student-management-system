@@ -1,13 +1,76 @@
 #include <stdio.h>
+#include <string.h>
 struct student
 {
     char name[50];
     int roll;
     float per;
 };
+
+struct student s[100];
+int sr_no = 0;
+void loadStudents()
+{
+    FILE *fp;
+
+    fp = fopen("students.txt", "r");
+
+    if(fp == NULL)
+    {
+        return;  
+    }
+
+    while(fscanf(fp,"%s %d %f",
+        s[sr_no].name,
+        &s[sr_no].roll,
+        &s[sr_no].per) != EOF)
+    {
+        sr_no++;
+    }
+
+    fclose(fp);
+}
 void addStudent()
 {
-    printf("Add Student Details");
+    FILE *fp;
+    int n;
+
+    printf("Enter number of students you want to add: ");
+    scanf("%d", &n);
+    while (getchar() != '\n');
+    if (n + sr_no > 100)
+    {
+        printf("Only %d entries possible.", 100 - sr_no);
+        return;
+    }
+    fp = fopen("students.txt", "a");
+    if (fp == NULL)
+    {
+        printf("File opening error!");
+        return;
+    }
+    printf("\nEnter Student Details\n");
+    printf("Instead of Spaces Use _ in names");
+
+    for (int i = 1; i <= n; i++)
+    {
+        printf("Enter Name of Student%d: ", i);
+        fgets(s[sr_no].name, 50, stdin);
+        s[sr_no].name[strcspn(s[sr_no].name, "\n")] = '\0';
+        printf("Enter Roll of Student%d: ", i);
+        scanf("%d", &s[sr_no].roll);
+        printf("Enter Percentage of Student%d: ", i);
+        scanf("%f", &s[sr_no].per);
+        while (getchar() != '\n');
+
+        fprintf(fp, "%-20s\t %-10d\t %-10.2f\n",
+                s[sr_no].name,
+                s[sr_no].roll,
+                s[sr_no].per);
+
+        sr_no++;
+    }
+    fclose(fp);
 }
 void displayStudent()
 {
@@ -30,12 +93,14 @@ void sortStudent()
     printf("Sort Student Details");
 }
 
-int main() {
+int main()
+{
 
     int choice;
     char ch;
+    loadStudents();
 
-   do 
+    do
     {
         printf("\n========================");
         printf("\n Student Management System");
@@ -50,47 +115,44 @@ int main() {
         printf("\n7. Exit");
 
         printf("\nEnter choice: ");
-        scanf("%d",&choice);
+        scanf("%d", &choice);
 
-
-        switch(choice)
+        switch (choice)
         {
-            case 1:
-                addStudent();
-                break;
+        case 1:
+            addStudent();
+            break;
 
-            case 2:
-                displayStudent();
-                break;
+        case 2:
+            displayStudent();
+            break;
 
-            case 3:
-                searchStudent();
-                break;
+        case 3:
+            searchStudent();
+            break;
 
-            case 4:
-                updateStudent();
-                break;
+        case 4:
+            updateStudent();
+            break;
 
-            case 5: 
-                deleteStudent();
-                break;
+        case 5:
+            deleteStudent();
+            break;
 
-            case 6: 
-                sortStudent();
-                break;
+        case 6:
+            sortStudent();
+            break;
 
-            case 7: 
-                return 0;
+        case 7:
+            return 0;
 
-            default:
-                printf("\nInvalid choice");
+        default:
+            printf("\nInvalid choice");
         }
 
-    printf("Do you want to perform another operation? (y/n): ");
-    scanf(" %c", &ch);
-    }while(ch=='y' || ch=='Y');
+        printf("Do you want to perform another operation? (y/n): ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
 
-
-    
     return 0;
 }
