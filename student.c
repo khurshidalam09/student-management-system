@@ -50,7 +50,7 @@ void addStudent()
         return;
     }
     printf("\nEnter Student Details\n");
-    printf("Instead of Spaces Use _ in names");
+    printf("Instead of Spaces Use _ in Names\n");
 
     for (int i = 1; i <= n; i++)
     {
@@ -74,8 +74,31 @@ void addStudent()
 }
 void displayStudent()
 {
-    printf("Display Student Details");
+    FILE *fp;
+    fp = fopen("students.txt", "r");
+     if(fp == NULL)
+    {
+        printf("File not found");
+        return;  
+    }
+int i = 0;
+printf("\nName\t\tRoll\t\tPercentage\n");
+printf("-------------------------------------\n");
+while (i < 100 &&fscanf(fp, "%s %d %f",
+              s[i].name,
+              &s[i].roll,
+              &s[i].per) == 3)
+{
+    printf("%-15s\t%-10d\t%-10.2f\n",
+           s[i].name,
+           s[i].roll,
+           s[i].per);
+    i++;
 }
+        
+  fclose(fp);
+  }
+
 void searchStudent()
 {
     printf("Search Student Details");
