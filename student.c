@@ -41,7 +41,7 @@ void addStudent()
         ;
     if (n + sr_no > 100)
     {
-        printf("Only %d Entries Possible.", 100 - sr_no);
+        printf("Only %d Entries Possible.\n", 100 - sr_no);
         return;
     }
     fp = fopen("students.txt", "a");
@@ -223,12 +223,72 @@ void updateStudent()
 }
 void deleteStudent()
 {
-    printf("Delete Student Details");
-}
-void sortStudent()
-{
-    printf("Sort Student Details");
-}
+int roll;
+    int found = 0;
+    printf("\nEnter Roll Number Of Student: ");
+    scanf("%d", &roll);
+    FILE *fp;
+    FILE *fq;
+    fp = fopen("students.txt", "r");
+    if (fp == NULL)
+    {
+        printf("File Not Found");
+        return;
+    }
+    fq = fopen("temp.txt", "w");
+
+    if (fq == NULL)
+    {
+        printf("Unable To Create Temporary File.\n");
+        fclose(fp);
+        return;
+    }
+    int i = 0;
+    while (i < 100 && fscanf(fp, "%s %d %f",
+                             s[i].name,
+                             &s[i].roll,
+                             &s[i].per) == 3)
+    {
+        if (s[i].roll == roll)
+        {
+            found = 1;
+        
+        }
+        else
+        {
+            fprintf(fq, "%-20s\t %-10d\t %-10.2f\n",
+                    s[i].name,
+                    s[i].roll,
+                    s[i].per);
+        }
+
+        i++;
+    }
+    fclose(fp);
+    fclose(fq);
+    if (found)
+    {
+        if (remove("students.txt") == 0)
+        {
+            if (rename("temp.txt", "students.txt") == 0)
+            {
+                printf("Student Deleted Successfully.\n");
+            }
+            else
+            {
+                printf("Error Renaming File.\n");
+            }
+        }
+        else
+        {
+            printf("Error Deleting Original File.\n");
+        }
+    }
+    else
+    {
+        remove("temp.txt");
+        printf("Student Not Found.\n");
+    }}
 
 int main()
 {
@@ -248,8 +308,7 @@ int main()
         printf("\n3. Search Student");
         printf("\n4. Update Student");
         printf("\n5. Delete Student");
-        printf("\n6. Sort Students");
-        printf("\n7. Exit");
+        printf("\n6. Exit");
 
         printf("\nEnter choice: ");
         scanf("%d", &choice);
@@ -277,10 +336,6 @@ int main()
             break;
 
         case 6:
-            sortStudent();
-            break;
-
-        case 7:
             return 0;
 
         default:
