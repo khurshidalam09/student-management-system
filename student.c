@@ -35,33 +35,35 @@ void addStudent()
     FILE *fp;
     int n;
 
-    printf("Enter number of students you want to add: ");
+    printf("Enter Number Of Students You Want To Add: ");
     scanf("%d", &n);
-    while (getchar() != '\n');
+    while (getchar() != '\n')
+        ;
     if (n + sr_no > 100)
     {
-        printf("Only %d entries possible.", 100 - sr_no);
+        printf("Only %d Entries Possible.", 100 - sr_no);
         return;
     }
     fp = fopen("students.txt", "a");
     if (fp == NULL)
     {
-        printf("File opening error!");
+        printf("File Opening Error!");
         return;
     }
     printf("\nEnter Student Details\n");
-    printf("Instead of Spaces Use _ in Names\n");
+    printf("Instead Of Spaces Use _ in Names\n");
 
     for (int i = 1; i <= n; i++)
     {
-        printf("Enter Name of Student%d: ", i);
+        printf("Enter Name Of Student%d: ", i);
         fgets(s[sr_no].name, 50, stdin);
         s[sr_no].name[strcspn(s[sr_no].name, "\n")] = '\0';
-        printf("Enter Roll of Student%d: ", i);
+        printf("Enter Roll Of Student%d: ", i);
         scanf("%d", &s[sr_no].roll);
-        printf("Enter Percentage of Student%d: ", i);
+        printf("Enter Percentage Of Student%d: ", i);
         scanf("%f", &s[sr_no].per);
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         fprintf(fp, "%-20s\t %-10d\t %-10.2f\n",
                 s[sr_no].name,
@@ -78,7 +80,7 @@ void displayStudent()
     fp = fopen("students.txt", "r");
     if (fp == NULL)
     {
-        printf("File not found");
+        printf("File Not found");
         return;
     }
     int i = 0;
@@ -101,15 +103,15 @@ void displayStudent()
 void searchStudent()
 {
 
-    int i=0;
+    int i = 0;
     int roll;
-    printf("Enter roll number to search: ");
+    printf("Enter Roll Number To Search: ");
     scanf("%d", &roll);
     FILE *fp;
     fp = fopen("students.txt", "r");
     if (fp == NULL)
     {
-        printf("File not Found\n");
+        printf("File Not Found\n");
         return;
     }
     while (i < 100 && fscanf(fp, "%s %d %f",
@@ -125,18 +127,99 @@ void searchStudent()
                    s[i].name,
                    s[i].roll,
                    s[i].per);
-                    fclose(fp);
+            fclose(fp);
 
             return;
         }
         i++;
-    } 
-    printf("No such record\n");
+    }
+    printf("No Such Record\n");
     fclose(fp);
 }
 void updateStudent()
 {
-    printf("Update Student Details");
+    int roll;
+    int found = 0;
+    printf("\nEnter Roll Number Of Student: ");
+    scanf("%d", &roll);
+    FILE *fp;
+    FILE *fq;
+    fp = fopen("students.txt", "r");
+    if (fp == NULL)
+    {
+        printf("File Not Found");
+        return;
+    }
+    fq = fopen("temp.txt", "w");
+
+    if (fq == NULL)
+    {
+        printf("Unable To Create Temporary File.\n");
+        fclose(fp);
+        return;
+    }
+    int i = 0;
+    while (i < 100 && fscanf(fp, "%s %d %f",
+                             s[i].name,
+                             &s[i].roll,
+                             &s[i].per) == 3)
+    {
+        if (s[i].roll == roll)
+        {
+            found = 1;
+            printf("\nStudent Found Enter New Details\n");
+            printf("----------------------------------\n");
+
+            printf("Enter New Roll Number: ");
+            scanf("%d", &s[i].roll);
+            printf("Enter New Percentage: ");
+            scanf("%f", &s[i].per);
+            printf("Use _ Instead Of Spaces in New Name:\n");
+            while (getchar() != '\n')
+                ;
+            printf("Enter New Name:");
+            fgets(s[i].name, 50, stdin);
+            s[i].name[strcspn(s[i].name, "\n")] = '\0';
+            fprintf(fq, "%-20s\t %-10d\t %-10.2f\n",
+                    s[i].name,
+                    s[i].roll,
+                    s[i].per);
+        }
+        else
+        {
+            fprintf(fq, "%-20s\t %-10d\t %-10.2f\n",
+                    s[i].name,
+                    s[i].roll,
+                    s[i].per);
+        }
+
+        i++;
+    }
+    fclose(fp);
+    fclose(fq);
+    if (found)
+    {
+        if (remove("students.txt") == 0)
+        {
+            if (rename("temp.txt", "students.txt") == 0)
+            {
+                printf("Student Updated Successfully.\n");
+            }
+            else
+            {
+                printf("Error Renaming File.\n");
+            }
+        }
+        else
+        {
+            printf("Error Deleting Original File.\n");
+        }
+    }
+    else
+    {
+        remove("temp.txt");
+        printf("Student Not Found.\n");
+    }
 }
 void deleteStudent()
 {
