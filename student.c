@@ -37,8 +37,7 @@ void addStudent()
 
     printf("Enter Number Of Students You Want To Add: ");
     scanf("%d", &n);
-    while (getchar() != '\n')
-        ;
+    while (getchar() != '\n') ;
     if (n + sr_no > 100)
     {
         printf("Only %d Entries Possible.\n", 100 - sr_no);
@@ -62,8 +61,7 @@ void addStudent()
         scanf("%d", &s[sr_no].roll);
         printf("Enter Percentage Of Student%d: ", i);
         scanf("%f", &s[sr_no].per);
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n') ;
 
         fprintf(fp, "%-20s\t %-10d\t %-10.2f\n",
                 s[sr_no].name,
@@ -175,8 +173,7 @@ void updateStudent()
             printf("Enter New Percentage: ");
             scanf("%f", &s[i].per);
             printf("Use _ Instead Of Spaces in New Name:\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             printf("Enter New Name:");
             fgets(s[i].name, 50, stdin);
             s[i].name[strcspn(s[i].name, "\n")] = '\0';
